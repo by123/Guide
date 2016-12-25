@@ -1,6 +1,7 @@
 package guide.by.android.com.guide.view;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,12 +12,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -27,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +42,15 @@ import guide.by.android.com.guide.util.KeyboardUtil;
 import guide.by.android.com.guide.util.Utils;
 import guide.by.android.com.guide.util.wifi.WifiUtils;
 
+import static android.R.attr.keycode;
 import static android.net.wifi.WifiManager.WIFI_STATE_DISABLED;
 import static android.net.wifi.WifiManager.WIFI_STATE_DISABLING;
 import static android.net.wifi.WifiManager.WIFI_STATE_ENABLED;
 import static android.net.wifi.WifiManager.WIFI_STATE_ENABLING;
 import static android.net.wifi.WifiManager.WIFI_STATE_UNKNOWN;
+import static android.view.KeyEvent.KEYCODE_DPAD_CENTER;
+import static android.view.KeyEvent.KEYCODE_DPAD_DOWN;
+import static android.view.KeyEvent.KEYCODE_DPAD_UP;
 import static android.view.KeyEvent.KEYCODE_NUMPAD_ENTER;
 import static guide.by.android.com.guide.util.Constant.Key_Ok;
 
@@ -300,13 +308,33 @@ public class WifiConnectActivity extends Activity implements AdapterView.OnItemC
     };
 
 
+    private void OnClick(int keyCode)
+    {
+        try
+        {
+            String keyCommand = "input keyevent " + keyCode;
+            Runtime runtime = Runtime.getRuntime();
+            Process proc = runtime.exec(keyCommand);
+
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Log.i("by","----------------------------------->"+keyCode);
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
         if(keyCode ==  Key_Ok ) {
             if(isShowKeyboard)
             {
-                Log.i("by","----------------------------------->"+keyCode);
+                if(event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    OnClick(KEYCODE_DPAD_CENTER);
+                }
             }
             else
             {
