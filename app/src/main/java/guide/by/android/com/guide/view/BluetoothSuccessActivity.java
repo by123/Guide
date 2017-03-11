@@ -1,7 +1,10 @@
 package guide.by.android.com.guide.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.TextView;
@@ -23,17 +26,16 @@ public class BluetoothSuccessActivity extends Activity {
         setContentView(R.layout.page_bluetooth_success);
 
 
-        TextView searchTxt = (TextView)findViewById(R.id.txt_search);
-        Utils.setTTF(searchTxt,this,"HeeboLight.ttf");
+        TextView searchTxt = (TextView) findViewById(R.id.txt_search);
+        Utils.setTTF(searchTxt, this, "HeeboLight.ttf");
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode)
-        {
+        switch (keyCode) {
             case Constant.Key_Ok:
                 finish();
-                startActivity(new Intent(BluetoothSuccessActivity.this,LanguageActivity.class));
+                startActivity(new Intent(BluetoothSuccessActivity.this, LanguageActivity.class));
                 break;
             case Constant.Key_Back:
                 finish();
@@ -41,5 +43,8 @@ public class BluetoothSuccessActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 }
+
 

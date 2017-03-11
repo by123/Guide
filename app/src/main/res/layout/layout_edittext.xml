@@ -18,11 +18,12 @@
         <EditText
             android:id="@+id/edit_psw"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:imeOptions="actionDone"
             android:inputType="textVisiblePassword"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:textSize="30dp"
             android:textColor="@color/white" />
 
 

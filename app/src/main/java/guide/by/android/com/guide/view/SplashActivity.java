@@ -23,7 +23,7 @@ public class SplashActivity extends Activity {
             public void run() {
                 try {
                     Thread.sleep(2000);
-                    startActivity(new Intent(SplashActivity.this,HelloActivity.class));
+                    startActivity(new Intent(SplashActivity.this, HelloActivity.class));
                     finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

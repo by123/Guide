@@ -21,7 +21,7 @@ public class HelloActivity extends Activity {
         setContentView(R.layout.page_hello);
 
         TextView text = (TextView) findViewById(R.id.txt_hello);
-        Utils.setTTF(text,this,"HeeboMedium.ttf");
+        Utils.setTTF(text, this, "HeeboMedium.ttf");
 
 
         new Thread(new Runnable() {
@@ -29,7 +29,7 @@ public class HelloActivity extends Activity {
             public void run() {
                 try {
                     Thread.sleep(2000);
-                    startActivity(new Intent(HelloActivity.this,BluetoothConnectActivity.class));
+                    startActivity(new Intent(HelloActivity.this, BluetoothConnectActivity.class));
                     finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

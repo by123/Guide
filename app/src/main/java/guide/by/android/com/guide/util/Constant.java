@@ -28,6 +28,8 @@ public class Constant {
     public final static int Key_Voice_Add = 24;
     public final static int Key_Voice_Reduce = 25;
 
+    public final static String Action_NetWork_Success = "network_success";
+
 
     public final static String DeviceName = "MediaQ RCU";
 //     public final static String DeviceName = "GearHub-Remote";

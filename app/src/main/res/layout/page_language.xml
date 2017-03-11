@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:divider="@color/transparent"
             android:dividerHeight="0dp"
+            android:scrollbars="none"
             android:listSelector="@color/transparent"
             android:layout_below="@+id/txt_language"
           />

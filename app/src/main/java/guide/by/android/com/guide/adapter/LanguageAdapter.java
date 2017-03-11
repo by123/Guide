@@ -1,5 +1,6 @@
 package guide.by.android.com.guide.adapter;
 
+import android.animation.ValueAnimator;
 import android.app.Application;
 import android.content.Context;
 import android.media.Image;
@@ -29,6 +30,7 @@ public class LanguageAdapter extends BaseAdapter {
     private List<LanguageModel> mDatas = null;
     private Context mContext;
     private int size = 0;
+    private int selectPosition;
 
     public LanguageAdapter(Context context, List<LanguageModel> datas) {
         this.mDatas = datas;
@@ -38,6 +40,11 @@ public class LanguageAdapter extends BaseAdapter {
             size = mDatas.size();
         }
     }
+
+    public void setSelectPosition(int position) {
+        selectPosition = position;
+    }
+
 
     @Override
     public int getCount() {
@@ -74,13 +81,18 @@ public class LanguageAdapter extends BaseAdapter {
             LanguageModel model = mDatas.get(position);
             holder.languageTxt.setText(model.getLanguage());
             if (model.isSelect()) {
-                holder.languageTxt.setTextSize(35);
+                startAnim(holder.languageTxt,1.0f,1.5f);
                 holder.languageTxt.setTextColor(MyApplication.mApplication.getResources().getColor(R.color.bg_color));
-                convertView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.backgroud));
+                convertView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
             } else {
-                holder.languageTxt.setTextSize(30);
+                if(selectPosition == position)
+                {
+                    startAnim(holder.languageTxt,1.5f,1.0f);
+                }
                 holder.languageTxt.setTextColor(MyApplication.mApplication.getResources().getColor(R.color.white));
-                convertView.setBackgroundDrawable(null);
+                convertView.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
+
+
             }
         }
         return convertView;
@@ -88,5 +100,19 @@ public class LanguageAdapter extends BaseAdapter {
 
     private class ViewHolder {
         private TextView languageTxt;
+    }
+    private void startAnim(final View view,float start,float end)
+    {
+        ValueAnimator animator = ValueAnimator.ofFloat(start, end);
+        animator.setDuration(300);
+        animator.start();
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                view.setScaleX(value);
+                view.setScaleY(value);
+            }
+        });
     }
 }

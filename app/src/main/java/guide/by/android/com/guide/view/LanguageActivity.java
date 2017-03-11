@@ -1,7 +1,11 @@
 package guide.by.android.com.guide.view;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -19,6 +23,8 @@ import guide.by.android.com.guide.model.LanguageModel;
 import guide.by.android.com.guide.util.Constant;
 import guide.by.android.com.guide.util.Utils;
 
+import static android.R.attr.data;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static guide.by.android.com.guide.util.Constant.languages;
 
 /**
@@ -41,8 +47,8 @@ public class LanguageActivity extends Activity implements AdapterView.OnItemClic
 
     private void initView() {
 
-        mLanguageTxt = (TextView)findViewById(R.id.txt_language);
-        Utils.setTTF(mLanguageTxt,this,"HeeboMedium.ttf");
+        mLanguageTxt = (TextView) findViewById(R.id.txt_language);
+        Utils.setTTF(mLanguageTxt, this, "HeeboMedium.ttf");
 
         mLanguageLayout = findViewById(R.id.layout_language);
         mLanguageListView = (ListView) mLanguageLayout.findViewById(R.id.listview);
@@ -58,15 +64,19 @@ public class LanguageActivity extends Activity implements AdapterView.OnItemClic
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<LanguageModel> datas = mLanguageAdapter.getDatas();
                 if (datas != null && datas.size() > 0) {
-                    for (LanguageModel data : datas) {
-                        data.setSelect(false);
+                    for (int i= 0 ; i < datas.size() ; i ++ ) {
+                        LanguageModel data = datas.get(i);
+                        if(data.isSelect())
+                        {
+                            data.setSelect(false);
+                            mLanguageAdapter.setSelectPosition(i);
+                        }
                     }
                     datas.get(position).setSelect(true);
                     mLanguageAdapter.notifyDataSetChanged();
                 }
 
-                switch (position)
-                {
+                switch (position) {
                     case 0:
                         mLanguageTxt.setText("Language");
                         break;
@@ -95,17 +105,35 @@ public class LanguageActivity extends Activity implements AdapterView.OnItemClic
             datas.get(position).setSelect(true);
             mLanguageAdapter.notifyDataSetChanged();
         }
-        finish();
-        startActivity(new Intent(LanguageActivity.this,WifiConnectActivity.class));
     }
 
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode ==  Constant.Key_Ok) {
+        if (keyCode == Constant.Key_Ok) {
             finish();
-            startActivity(new Intent(LanguageActivity.this,WifiConnectActivity.class));
+            if(isNetworkConnected(this))
+            {
+                startActivity(new Intent(LanguageActivity.this, WifiConnectSuccessActivity.class));
+            }
+            else
+            {
+                startActivity(new Intent(LanguageActivity.this, WifiConnectActivity.class));
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    public boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
+
 }

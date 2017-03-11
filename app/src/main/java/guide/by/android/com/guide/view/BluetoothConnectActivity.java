@@ -32,7 +32,7 @@ import static guide.by.android.com.guide.util.bluetooth.BluetoothManager.getInpu
  * Created by by.huang on 2016/12/12.
  */
 
-public class BluetoothConnectActivity extends Activity{
+public class BluetoothConnectActivity extends Activity {
 
     private final static long SCAN_PERIOD = 10000;
     private BluetoothAdapter mBluetoothAdapter;
@@ -72,18 +72,17 @@ public class BluetoothConnectActivity extends Activity{
         this.registerReceiver(mBlueBroadcastReceiver, localIntentFilter);
     }
 
-    private void initView()
-    {
+    private void initView() {
         this.mBluetoothManager = BluetoothManager.getInstance();
 
-        TextView holdTxt = (TextView)findViewById(R.id.txt_hold);
-        Utils.setTTF(holdTxt,this,"HeeboLight.ttf");
+        TextView holdTxt = (TextView) findViewById(R.id.txt_hold);
+        Utils.setTTF(holdTxt, this, "HeeboLight.ttf");
 
-        TextView connectTxt = (TextView)findViewById(R.id.txt_connect);
-        Utils.setTTF(connectTxt,this,"HeeboLight.ttf");
+        TextView connectTxt = (TextView) findViewById(R.id.txt_connect);
+        Utils.setTTF(connectTxt, this, "HeeboLight.ttf");
 
-        TextView searchTxt = (TextView)findViewById(R.id.txt_search);
-        Utils.setTTF(searchTxt,this,"HeeboLight.ttf");
+        TextView searchTxt = (TextView) findViewById(R.id.txt_search);
+        Utils.setTTF(searchTxt, this, "HeeboLight.ttf");
 
         initBluetooth();
     }
@@ -97,12 +96,10 @@ public class BluetoothConnectActivity extends Activity{
                 public void run() {
                     mScanning = false;
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    if(mCurrentDevice == null)
-                    {
-                        Toast.makeText(BluetoothConnectActivity.this,"未搜索到设备，正在重试",Toast.LENGTH_LONG).show();
+                    if (mCurrentDevice == null) {
+                        Toast.makeText(BluetoothConnectActivity.this, "Can not find remote,  trying again..", Toast.LENGTH_LONG).show();
                         scanLeDevice(true);
-                    }
-                    else {
+                    } else {
                         initPair();
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     }
@@ -124,13 +121,12 @@ public class BluetoothConnectActivity extends Activity{
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(device == null)
+                    if (device == null)
                         return;
-                    if(device.getName() == null)
+                    if (device.getName() == null)
                         return;
-                    Log.i("by","检测到设备->"+device.getName());
-                    if(device.getName().equals(DeviceName))
-                    {
+                    Log.i("by", "检测到设备->" + device.getName());
+                    if (device.getName().equals(DeviceName)) {
                         mCurrentDevice = device;
                     }
                 }
@@ -138,14 +134,13 @@ public class BluetoothConnectActivity extends Activity{
         }
     };
 
-    private void initBluetooth()
-    {
+    private void initBluetooth() {
         //初始化广播接收
         mBlueBroadcastReceiver = new BlueBroadcastReceiver();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.getProfileConnectionState(BluetoothProfile.GATT);
         if (mBluetoothAdapter == null) {
-            Toast.makeText(this,"不支持蓝牙功能",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "unable to use bluetooth", Toast.LENGTH_LONG).show();
             //不支持蓝牙
             return;
         }
@@ -163,39 +158,32 @@ public class BluetoothConnectActivity extends Activity{
                     boolean isConnect = false;
                     for (BluetoothDevice bluetoothDevice : list) {
 
-                        if(bluetoothDevice.getName().equals(Constant.DeviceName))
-                        {
+                        if (bluetoothDevice.getName().equals(Constant.DeviceName)) {
                             isConnect = true;
                             break;
                         }
                     }
-                    if(isConnect)
-                    {
-                        Toast.makeText(BluetoothConnectActivity.this, "设备已连接上", Toast.LENGTH_LONG).show();
+                    if (isConnect) {
+                        Toast.makeText(BluetoothConnectActivity.this, "Remote paired", Toast.LENGTH_LONG).show();
                         goNext();
-                    }
-                    else
-                    {
+                    } else {
                         scanLeDevice(true);
                     }
                 }
             });
-        }
-        else {
-            Toast.makeText(this,"安卓系统小于4.0，不支持",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "unable to use bluetooth", Toast.LENGTH_LONG).show();
         }
     }
 
     //配对
-    private void initPair(){
-        if(mCurrentDevice.getBondState() == BluetoothDevice.BOND_BONDED)
-        {
-            Toast.makeText(BluetoothConnectActivity.this, "设备已绑定，开始连接", Toast.LENGTH_LONG).show();
-            mBluetoothManager.connect(mCurrentDevice,listener);
+    private void initPair() {
+        if (mCurrentDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+            Toast.makeText(BluetoothConnectActivity.this, "pairing...", Toast.LENGTH_LONG).show();
+            mBluetoothManager.connect(mCurrentDevice, listener);
 
-        }
-        else {
-            Toast.makeText(BluetoothConnectActivity.this, "已经寻找到遥控器,开始配对", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(BluetoothConnectActivity.this, "found remote, start pairing", Toast.LENGTH_LONG).show();
             mBluetoothManager.pair(mCurrentDevice);
         }
     }
@@ -206,17 +194,17 @@ public class BluetoothConnectActivity extends Activity{
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)){
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
                 switch (mCurrentDevice.getBondState()) {
                     case BluetoothDevice.BOND_BONDING:
 //                        Toast.makeText(BluetoothConnectActivity.this, "正在配对", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothDevice.BOND_BONDED:
 //                        Toast.makeText(BluetoothConnectActivity.this, "完成配对,开始连接", Toast.LENGTH_LONG).show();
-                        mBluetoothManager.connect(mCurrentDevice,listener);
+                        mBluetoothManager.connect(mCurrentDevice, listener);
                         break;
                     case BluetoothDevice.BOND_NONE:
-                        Toast.makeText(BluetoothConnectActivity.this, "取消配对", Toast.LENGTH_LONG).show();
+                        Toast.makeText(BluetoothConnectActivity.this, "pairing failed", Toast.LENGTH_LONG).show();
                         break;
                     default:
                         break;
@@ -232,14 +220,13 @@ public class BluetoothConnectActivity extends Activity{
                 if (profile == getInputDeviceHiddenConstant()) {
                     if (mCurrentDevice != null) {
                         Method method = proxy.getClass().getMethod("connect",
-                                new Class[] { BluetoothDevice.class });
+                                new Class[]{BluetoothDevice.class});
                         method.invoke(proxy, mCurrentDevice);
                         goNext();
-                        Log.i("by","蓝牙连接成功了！！！！！！！" + proxy);
                     }
                 }
             } catch (Exception e) {
-                 e.printStackTrace();
+                e.printStackTrace();
             }
         }
 
@@ -249,10 +236,9 @@ public class BluetoothConnectActivity extends Activity{
         }
     };
 
-    private void goNext()
-    {
+    private void goNext() {
         finish();
-        startActivity(new Intent(BluetoothConnectActivity.this,BluetoothSuccessActivity.class));
+        startActivity(new Intent(BluetoothConnectActivity.this, BluetoothSuccessActivity.class));
     }
 
 }
